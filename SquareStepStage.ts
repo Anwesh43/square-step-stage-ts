@@ -3,6 +3,8 @@ const nodes : number = 4
 class SquareStepStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
     context : CanvasRenderingContext2D
+    ss : SquareStep = new SquareStep()
+    animator : Animator = new Animator()
 
     initCanvas() {
         this.canvas.width = w
@@ -14,11 +16,19 @@ class SquareStepStage {
     render() {
         this.context.fillStyle = '#bdbdbd'
         this.context.fillRect(0, 0, w, h)
+        this.ss.draw(this.context)
     }
 
     handleTap() {
         this.canvas.onmousedown = () => {
-
+            this.ss.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.ss.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
         }
     }
 
