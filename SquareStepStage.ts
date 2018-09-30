@@ -26,6 +26,7 @@ class SquareStepStage {
                     this.render()
                     this.ss.update(() => {
                         this.animator.stop()
+                        this.render()
                     })
                 })
             })
