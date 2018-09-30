@@ -1,5 +1,5 @@
 const w : number = window.innerWidth, h : number = window.innerHeight
-const size : number = 4
+const nodes : number = 4
 class SquareStepStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
     context : CanvasRenderingContext2D
@@ -36,7 +36,7 @@ class State {
     prevScale : number = 0
 
     update(cb : Function) {
-        this.scale += (0.1/size) * this.dir
+        this.scale += (0.1/nodes) * this.dir
         if (Math.abs(this.scale - this.prevScale) > 1) {
             this.scale = this.prevScale + this.dir
             this.dir = 0
@@ -69,5 +69,39 @@ class Animator {
             this.animated = false
             clearInterval(this.interval)
         }
+    }
+}
+
+class SquareStep {
+    state : State = new State()
+
+    draw(context : CanvasRenderingContext2D) {
+        const scale : number = this.state.scale
+        const gap : number = h / (nodes + 1)
+        context.save()
+        context.translate(w/2, h/2)
+        context.lineCap = 'round'
+        context.lineWidth = Math.min(w, h) / 60
+        context.strokeStyle = '#0D47A1'
+        const fact = 1 / nodes
+        for (var i = 0; i < nodes; i++) {
+            const sc = Math.min(fact, Math.max(0, scale - fact * i)) * nodes
+            context.save()
+            context.rotate(Math.PI/2 * i)
+            context.beginPath()
+            context.moveTo(-gap/2, -gap/2)
+            context.lineTo(-gap/2 + gap * sc, -gap/2)
+            context.stroke()
+            context.restore()
+        }
+        context.restore()
+    }
+
+    update(cb : Function) {
+        this.state.update(cb)
+    }
+
+    startUpdating(cb : Function) {
+        this.state.startUpdating(cb)
     }
 }
